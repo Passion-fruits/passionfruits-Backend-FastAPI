@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, status, Depends
 
 from fastapi_jwt_auth import AuthJWT
 
@@ -15,7 +15,7 @@ from project.config import GOOGLE_OAUTH2_PATH, ACCESS_TOKEN_EXPIRE_MINUTES, REFR
 router = APIRouter()
 
 
-@router.post(f"{GOOGLE_OAUTH2_PATH}", tags=["auth"])
+@router.post(f"{GOOGLE_OAUTH2_PATH}", status_code=status.HTTP_200_OK, tags=["auth"])
 async def google_login(body: GoogleOauth, authorize: AuthJWT = Depends()):
     email = get_user_info(id_token=body.id_token)
 
