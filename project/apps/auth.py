@@ -27,7 +27,7 @@ async def google_login(body: GoogleOauth, authorize: AuthJWT = Depends()):
 
     access_token = authorize.create_access_token(
         subject=email,
-        algorithm= ALGORITHM,
+        algorithm=ALGORITHM,
         expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     refresh_token = authorize.create_refresh_token(
