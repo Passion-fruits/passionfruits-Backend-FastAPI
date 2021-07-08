@@ -8,5 +8,5 @@ engine = create_engine(MYSQL_DB_URL, pool_recycle=3600, echo=True)
 
 Base = declarative_base()
 
-Session = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
+Session = scoped_session(sessionmaker(bind=engine, autocommit=False))
 session = Session()
