@@ -7,8 +7,8 @@ from project.core.models import Base
 class User_genre(Base):
     __tablename__ = "user_genre"
 
-    profile_user_id = Column(Integer, ForeignKey("profile.user_id"))
-    genre_type_id = Column(Integer, ForeignKey("genre_type.id"))
+    profile_user_id = Column(Integer, ForeignKey("profile.user_id"), primary_key=True)
+    genre_type_id = Column(Integer, ForeignKey("genre_type.id"), primary_key=True)
 
     profile = relationship("Profile", backref=backref("user_genres"))
-    genre_type = relationship("Genre_type", backref("genre_types"))
+    genre_type = relationship("Genre_type", backref=backref("genre_types"))
