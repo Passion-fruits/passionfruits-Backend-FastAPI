@@ -16,11 +16,15 @@ def is_follow(session: Session, follower_id: int, following_id: int):
     return True if follow_check else False
 
 
+def get_user_id(session: Session, email: str):
+    return session.query(User).filter(User.email == email).first().id
+
+
 def follow_it(session: Session, follower_email: str, following_id: int):
     if not is_user(session=session, email=follower_email) or not is_user(session=session, user_id=following_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this email")
 
-    follower_id = session.query(User).filter(User.email == follower_email).first().id
+    follower_id = get_user_id(session=session, email=follower_email)
     if is_follow(session=session, follower_id=follower_id, following_id=following_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is already follow")
 
