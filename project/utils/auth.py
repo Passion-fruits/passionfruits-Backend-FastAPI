@@ -28,10 +28,16 @@ def get_user_info(id_token: str):
     return email
 
 
-def is_user(session: Session, email: str):
-    user = session.query(User).filter(User.email == email).scalar()
+def is_user(session: Session, email: str = None, user_id: int = None, raise_exception: bool = False):
+    if email and not user_id:
+        user = session.query(User).filter(User.email == email).scalar()
 
-    return True if user else False
+        return True if user else False
+
+    elif not email and user_id:
+        user = session.query(User).filter(User.id == user_id).scalar()
+
+        return True if user else False
 
 
 def create_user(session: Session, name: str, email: str, genre_list: list):
