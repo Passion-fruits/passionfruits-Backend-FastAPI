@@ -5,7 +5,7 @@ from fastapi_jwt_auth import AuthJWT
 from project.core.models import session
 
 from project.utils.auth import token_check
-from project.utils.follow import follow_it
+from project.utils.follow import follow_it, unfollow_it
 
 
 router = APIRouter()
@@ -24,9 +24,17 @@ async def follow(user_id: int, authorize: AuthJWT = Depends()):
     }
 
 
-@router.delete("/follow/{user_id}")
-async def unfollow(user_id: int):
-    return
+@router.delete("/follow/{user_id}", status_code=status.HTTP_200_OK, tags=["follow"])
+async def unfollow(user_id: int, authorize: AuthJWT = Depends()):
+    token_check(authorize=authorize, type="access")
+
+    follower_email = authorize.get_jwt_subject()
+
+    unfollow_it(session=session, follower_email=follower_email, following_id=user_id)
+
+    return {
+        "message": "success"
+    }
 
 
 @router.get("/following/{user_id}")

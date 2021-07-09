@@ -26,9 +26,22 @@ def follow_it(session: Session, follower_email: str, following_id: int):
 
     follower_id = get_user_id(session=session, email=follower_email)
     if is_follow(session=session, follower_id=follower_id, following_id=following_id):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is already follow")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is already followed")
 
     session.add(
         Follow(follower=follower_id, following=following_id)
     )
+    session.commit()
+
+
+def unfollow_it(session: Session, follower_email: str, following_id: int):
+    if not is_user(session=session, email=follower_email) or not is_user(session=session, user_id=following_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this email")
+
+    follower_id = get_user_id(session=session, email=follower_email)
+    if not is_follow(session=session, follower_id=follower_id, following_id=following_id):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is not followed")
+
+    del_follow = session.query(Follow).filter(Follow.follower == follower_id, Follow.following == following_id).first()
+    session.delete(del_follow)
     session.commit()
