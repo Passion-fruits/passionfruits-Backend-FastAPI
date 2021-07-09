@@ -1,5 +1,8 @@
 from fastapi import HTTPException, status
 
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AccessTokenRequired, RefreshTokenRequired, JWTDecodeError
+
 from google.oauth2.id_token import verify_oauth2_token
 from google.auth.transport import requests
 
@@ -28,7 +31,7 @@ def get_user_info(id_token: str):
     return email
 
 
-def is_user(session: Session, email: str = None, user_id: int = None, raise_exception: bool = False):
+def is_user(session: Session, email: str = None, user_id: int = None):
     if email and not user_id:
         user = session.query(User).filter(User.email == email).scalar()
 
@@ -58,3 +61,21 @@ def create_user(session: Session, name: str, email: str, genre_list: list):
 
     session.add(user)
     session.commit()
+
+
+def token_check(authorize: AuthJWT, type: str):
+    try:
+        if type == "access":
+            authorize.jwt_required()
+        elif type == "refresh":
+            authorize.jwt_refresh_token_required()
+        else:
+            raise ValueError
+    except ValueError:
+        raise ValueError
+    except AccessTokenRequired:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="access token required")
+    except RefreshTokenRequired:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="refresh token required")
+    except JWTDecodeError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token has expired")
