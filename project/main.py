@@ -2,12 +2,13 @@ from fastapi import FastAPI
 
 import uvicorn
 
-from project.apps import auth
+from project.apps import auth, follow
 
 
 app = FastAPI()
 
 app.include_router(auth.router)
+app.include_router(follow.router)
 
 
 if __name__ == '__main__':
