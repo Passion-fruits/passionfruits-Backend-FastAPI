@@ -65,12 +65,12 @@ def get_followings(session: Session, user_id: int, page: int):
         Follow1.following,
         Profile.name,
         Profile.image_path,
-        func.count(Follow2.follower).label("follower")
+        func.count(Follow2.follower)
     ).join(Profile,  Follow1.following == Profile.user_id).\
         join(Follow2, Follow1.following == Follow2.following).\
         filter(Follow1.follower == 22).\
         group_by(Follow1.following, Profile.name, Profile.image_path).\
-        order_by("follower").\
+        order_by(func.count(Follow2.follower).desc()).\
         limit(limit).offset(offset).all()
 
     return following_info
