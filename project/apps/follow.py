@@ -51,7 +51,7 @@ async def get_following(user_id: int, page: int):
     }
 
 
-@router.get("/follower/{user_id}/{page}")
+@router.get("/follower/{user_id}/{page}", status_code=status.HTTP_200_OK, tags=["follow"])
 async def get_follower(user_id: int, page: int):
     followers = get_followers(session=session, user_id=user_id, page=page)
 
