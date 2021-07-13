@@ -14,6 +14,8 @@ from project.core.models.profile import Profile
 from project.core.models.user_genre import User_genre
 from project.core.models.genre_type import Genre_type
 
+from project.utils import is_user
+
 from project.config import CLIENT_ID
 
 
@@ -29,18 +31,6 @@ def get_user_info(id_token: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unable to validate social login")
 
     return email
-
-
-def is_user(session: Session, email: str = None, user_id: int = None):
-    if email and not user_id:
-        user = session.query(User).filter(User.email == email).scalar()
-
-        return True if user else False
-
-    elif not email and user_id:
-        user = session.query(User).filter(User.id == user_id).scalar()
-
-        return True if user else False
 
 
 def create_user(session: Session, name: str, email: str, genre_list: list):

@@ -4,11 +4,10 @@ from sqlalchemy import func
 from sqlalchemy.orm import aliased
 
 from project.core.models import Session
-from project.core.models.user import User
 from project.core.models.profile import Profile
 from project.core.models.follow import Follow
 
-from project.utils.auth import is_user
+from project.utils import is_user, get_user_id
 
 from project.config import LIMIT_NUM
 
@@ -18,10 +17,6 @@ def is_follow(session: Session, follower_id: int, following_id: int):
         filter(Follow.follower == follower_id, Follow.following == following_id).scalar()
 
     return True if follow_check else False
-
-
-def get_user_id(session: Session, email: str):
-    return session.query(User).filter(User.email == email).first().id
 
 
 def follow_it(session: Session, follower_email: str, following_id: int):
