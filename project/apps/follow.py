@@ -5,7 +5,7 @@ from fastapi_jwt_auth import AuthJWT
 from project.core.models import session
 
 from project.utils.auth import token_check
-from project.utils.follow import follow_it, unfollow_it, get_followings
+from project.utils.follow import follow_it, unfollow_it, get_followings, get_followers
 
 
 router = APIRouter()
@@ -51,6 +51,15 @@ async def get_following(user_id: int, page: int):
     }
 
 
-@router.get("/follower/{user_id}")
-async def get_follower(user_id: int):
-    return
+@router.get("/follower/{user_id}/{page}")
+async def get_follower(user_id: int, page: int):
+    followers = get_followers(session=session, user_id=user_id, page=page)
+
+    return {
+        "followers": [{
+            "id": id,
+            "name": name,
+            "image_path": image_path,
+            "follower": follower
+        } for id, name, image_path, follower in followers]
+    }

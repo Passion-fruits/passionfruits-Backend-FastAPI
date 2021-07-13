@@ -74,3 +74,28 @@ def get_followings(session: Session, user_id: int, page: int):
         limit(limit).offset(offset).all()
 
     return following_info
+
+
+def get_followers(session: Session, user_id: int, page: int):
+    if not is_user(session=session, user_id=user_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this id")
+
+    limit = LIMIT_NUM
+    offset = page * limit
+
+    Follow1 = aliased(Follow)
+    Follow2 = aliased(Follow)
+
+    follower_info = session.query(
+        Follow1.follower,
+        Profile.name,
+        Profile.image_path,
+        func.count(Follow2.follower)
+    ).join(Profile, Follow1.follower == Profile.user_id). \
+        outerjoin(Follow2, Follow1.follower == Follow2.following). \
+        filter(Follow1.following == 22). \
+        group_by(Follow1.follower, Profile.name, Profile.image_path). \
+        order_by(func.count(Follow2.follower).desc()). \
+        limit(limit).offset(offset).all()
+
+    return follower_info
