@@ -27,3 +27,19 @@ def like_it(session: Session, user_email: str, song_id: int):
         User_like_song(user_id=user_id, song_id=song_id)
     )
     session.commit()
+
+
+def unlike_it(session: Session, user_email: str, song_id: int):
+    user_id = get_user_id(session=session, email=user_email)
+
+    if not is_song(session=session, song_id=song_id):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find song matching this id")
+
+    if not is_like(session=session, user_id=user_id, song_id=song_id):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user does not like this song")
+
+    del_like = session.query(User_like_song).\
+        filter(User_like_song.user_id == user_id, User_like_song.song_id == song_id).first()
+
+    session.delete(del_like)
+    session.commit()
