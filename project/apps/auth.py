@@ -7,7 +7,7 @@ from datetime import timedelta
 from project.core.models import session
 from project.core.schemas.auth import SignUp, GoogleOauth
 
-from project.utils.auth import get_user_info, is_user, create_user
+from project.utils.auth import get_user_info, is_user, create_user, token_check
 
 from project.config import GOOGLE_OAUTH2_PATH, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES, ALGORITHM
 
@@ -67,4 +67,21 @@ async def google_login(body: GoogleOauth, authorize: AuthJWT = Depends()):
         "email": email,
         "access_token": access_token,
         "refresh_token": refresh_token
+    }
+
+
+@router.get("/refresh", status_code=status.HTTP_200_OK)
+async def token_refresh(authorize: AuthJWT = Depends()):
+    token_check(authorize=authorize, type="refresh")
+
+    email = authorize.get_jwt_subject()
+
+    access_token = authorize.create_access_token(
+        subject=email,
+        algorithm=ALGORITHM,
+        expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    return {
+        "access_token": access_token
     }
