@@ -7,8 +7,8 @@ from google.oauth2.id_token import verify_oauth2_token
 from google.auth.transport import requests
 
 from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
-from project.core.models import Session
 from project.core.models.user import User
 from project.core.models.profile import Profile
 from project.core.models.user_genre import User_genre

@@ -1,9 +1,8 @@
 from fastapi import HTTPException, status
 
 from sqlalchemy import func
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, Session
 
-from project.core.models import Session
 from project.core.models.profile import Profile
 from project.core.models.follow import Follow
 

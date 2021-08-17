@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 
-from project.core.models import Session
+from sqlalchemy.orm import Session
+
 from project.core.models.user_like_song import User_like_song
 
 from project.utils import get_user_id

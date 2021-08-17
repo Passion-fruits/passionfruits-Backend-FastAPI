@@ -1,4 +1,5 @@
-from project.core.models import Session
+from sqlalchemy.orm import Session
+
 from project.core.models.song import Song
 
 
