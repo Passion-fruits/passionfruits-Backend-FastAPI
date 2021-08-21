@@ -34,13 +34,13 @@ def get_user_info(id_token: str):
     return email
 
 
-def create_user(session: Session, name: str, email: str, genre_list: list):
+def create_user(session: Session, name: str, email: str, genre_list: list, image_path: str):
     if is_user(session=session, email=email):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This email is already in use")
 
     user = User(email=email)
 
-    profile = Profile(name=name)
+    profile = Profile(name=name, image_path=image_path)
 
     genre_filter_options = [Genre_type.name.like(genre_name) for genre_name in genre_list]
     genre_queries = session.query(Genre_type).filter(or_(*genre_filter_options)).all()

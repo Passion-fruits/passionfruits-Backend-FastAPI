@@ -22,7 +22,8 @@ async def sign_up(body: SignUp, authorize: AuthJWT = Depends()):
             session=session,
             name=body.name,
             email=body.email,
-            genre_list=body.user_genre
+            genre_list=body.user_genre,
+            image_path=body.image_path
         )
 
         access_token = authorize.create_access_token(
