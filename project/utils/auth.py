@@ -1,13 +1,14 @@
 from fastapi import HTTPException, status
 
-from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AccessTokenRequired, RefreshTokenRequired, JWTDecodeError
+from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError
 
 from google.oauth2.id_token import verify_oauth2_token
 from google.auth.transport import requests
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
+
+from datetime import datetime
 
 from project.core.models.user import User
 from project.core.models.profile import Profile
@@ -17,7 +18,7 @@ from project.core.models.sns import Sns
 
 from project.utils import is_user
 
-from project.config import CLIENT_ID
+from project.config import CLIENT_ID, ALGORITHM, SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 
 
 def get_user_info(id_token: str):
@@ -61,19 +62,30 @@ def create_user(session: Session, name: str, email: str, genre_list: list, image
     return user_id
 
 
-def token_check(authorize: AuthJWT, type: str):
+def create_token(user_id: int, type: str):
+    return encode(
+        payload={
+            "sub": user_id,
+            "type": type,
+            "iat": datetime.utcnow(),
+            "exp": (datetime.utcnow()+(ACCESS_TOKEN_EXPIRE_MINUTES if type == "access" else REFRESH_TOKEN_EXPIRE_MINUTES))
+        },
+        key=SECRET_KEY,
+        algorithm=ALGORITHM,
+        headers={
+            "typ": "JWT",
+            "alg": ALGORITHM
+        }
+    )
+
+
+def token_check(token: str, type: str):
     try:
-        if type == "access":
-            authorize.jwt_required()
-        elif type == "refresh":
-            authorize.jwt_refresh_token_required()
-        else:
-            raise ValueError
-    except ValueError:
-        raise ValueError
-    except AccessTokenRequired:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="access token required")
-    except RefreshTokenRequired:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="refresh token required")
-    except JWTDecodeError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token has expired")
+        payload = decode(token[7:], SECRET_KEY, algorithms=[ALGORITHM])
+        if (payload["type"] == type):
+            return payload["sub"]
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="access token is required")
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token expired")
+    except InvalidTokenError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid token")

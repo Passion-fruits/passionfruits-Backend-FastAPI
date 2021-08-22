@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Header
 
-from fastapi_jwt_auth import AuthJWT
+from typing import Optional
 
 from project.core.models import session_scope
 
@@ -12,13 +12,11 @@ router = APIRouter()
 
 
 @router.post("/follow/{user_id}", status_code=status.HTTP_201_CREATED, tags=["follow"])
-async def follow(user_id: int, authorize: AuthJWT = Depends()):
+async def follow(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        token_check(authorize=authorize, type="access")
+        follower_id = token_check(token=Authorization, type="access")
 
-        follower_email = authorize.get_jwt_subject()
-
-        follow_it(session=session, follower_email=follower_email, following_id=user_id)
+        follow_it(session=session, follower_id=follower_id, following_id=user_id)
 
         return {
             "message": "success"
@@ -26,13 +24,11 @@ async def follow(user_id: int, authorize: AuthJWT = Depends()):
 
 
 @router.delete("/follow/{user_id}", status_code=status.HTTP_200_OK, tags=["follow"])
-async def unfollow(user_id: int, authorize: AuthJWT = Depends()):
+async def unfollow(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        token_check(authorize=authorize, type="access")
+        follower_id = token_check(token=Authorization, type="access")
 
-        follower_email = authorize.get_jwt_subject()
-
-        unfollow_it(session=session, follower_email=follower_email, following_id=user_id)
+        unfollow_it(session=session, follower_id=follower_id, following_id=user_id)
 
         return {
             "message": "success"

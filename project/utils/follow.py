@@ -6,7 +6,7 @@ from sqlalchemy.orm import aliased, Session
 from project.core.models.profile import Profile
 from project.core.models.follow import Follow
 
-from project.utils import is_user, get_user_id
+from project.utils import is_user
 
 from project.config import LIMIT_NUM
 
@@ -18,11 +18,10 @@ def is_follow(session: Session, follower_id: int, following_id: int):
     return True if follow_check else False
 
 
-def follow_it(session: Session, follower_email: str, following_id: int):
-    if not is_user(session=session, email=follower_email) or not is_user(session=session, user_id=following_id):
+def follow_it(session: Session, follower_id: int, following_id: int):
+    if not is_user(session=session, user_id=follower_id) or not is_user(session=session, user_id=following_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this email")
 
-    follower_id = get_user_id(session=session, email=follower_email)
     if is_follow(session=session, follower_id=follower_id, following_id=following_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is already followed")
 
@@ -32,11 +31,10 @@ def follow_it(session: Session, follower_email: str, following_id: int):
     session.commit()
 
 
-def unfollow_it(session: Session, follower_email: str, following_id: int):
-    if not is_user(session=session, email=follower_email) or not is_user(session=session, user_id=following_id):
+def unfollow_it(session: Session, follower_id: int, following_id: int):
+    if not is_user(session=session, user_id=follower_id) or not is_user(session=session, user_id=following_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this")
 
-    follower_id = get_user_id(session=session, email=follower_email)
     if not is_follow(session=session, follower_id=follower_id, following_id=following_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="this user is not followed")
 

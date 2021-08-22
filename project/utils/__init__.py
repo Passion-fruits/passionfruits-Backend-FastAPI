@@ -19,7 +19,3 @@ def is_user(session: Session, email: str = None, user_id: int = None):
             return user.first().id
         else:
             return None
-
-
-def get_user_id(session: Session, email: str):
-    return session.query(User).filter(User.email == email).first().id

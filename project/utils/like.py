@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from project.core.models.user_like_song import User_like_song
 
-from project.utils import get_user_id
 from project.utils.song import is_song
 
 
@@ -15,8 +14,7 @@ def is_like(session: Session, user_id: int, song_id: int):
     return True if like else False
 
 
-def like_it(session: Session, user_email: str, song_id: int):
-    user_id = get_user_id(session=session, email=user_email)
+def like_it(session: Session, user_id: int, song_id: int):
 
     if not is_song(session=session, song_id=song_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find song matching this id")
@@ -30,8 +28,7 @@ def like_it(session: Session, user_email: str, song_id: int):
     session.commit()
 
 
-def unlike_it(session: Session, user_email: str, song_id: int):
-    user_id = get_user_id(session=session, email=user_email)
+def unlike_it(session: Session, user_id: int, song_id: int):
 
     if not is_song(session=session, song_id=song_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find song matching this id")
