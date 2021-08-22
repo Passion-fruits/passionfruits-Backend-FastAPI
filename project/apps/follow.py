@@ -35,7 +35,7 @@ async def unfollow(user_id: int, Authorization: Optional[str] = Header(...)):
         }
 
 
-@router.get("/following/{user_id}/{page}", status_code=status.HTTP_200_OK, tags=["follow"])
+@router.get("/following/{user_id}", status_code=status.HTTP_200_OK, tags=["follow"])
 async def get_following(user_id: int, page: int):
     with session_scope() as session:
         followings = get_followings(session=session, user_id=user_id, page=page)
@@ -50,7 +50,7 @@ async def get_following(user_id: int, page: int):
         }
 
 
-@router.get("/follower/{user_id}/{page}", status_code=status.HTTP_200_OK, tags=["follow"])
+@router.get("/follower/{user_id}", status_code=status.HTTP_200_OK, tags=["follow"])
 async def get_follower(user_id: int, page: int):
     with session_scope() as session:
         followers = get_followers(session=session, user_id=user_id, page=page)
