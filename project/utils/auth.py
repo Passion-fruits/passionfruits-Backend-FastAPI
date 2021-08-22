@@ -52,7 +52,13 @@ def create_user(session: Session, name: str, email: str, genre_list: list, image
     user.profiles = [profile]
 
     session.add(user)
+    session.flush()
+
+    user_id = user.id
+
     session.commit()
+
+    return user_id
 
 
 def token_check(authorize: AuthJWT, type: str):

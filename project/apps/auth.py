@@ -18,7 +18,7 @@ router = APIRouter()
 @router.post("/auth", status_code=status.HTTP_201_CREATED, tags=["auth"])
 async def sign_up(body: SignUp, authorize: AuthJWT = Depends()):
     with session_scope() as session:
-        create_user(
+        user_id = create_user(
             session=session,
             name=body.name,
             email=body.email,
@@ -27,12 +27,12 @@ async def sign_up(body: SignUp, authorize: AuthJWT = Depends()):
         )
 
         access_token = authorize.create_access_token(
-            subject=body.email,
+            subject=user_id,
             algorithm=ALGORITHM,
             expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         refresh_token = authorize.create_refresh_token(
-            subject=body.email,
+            subject=user_id,
             algorithm=ALGORITHM,
             expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
         )
@@ -48,26 +48,26 @@ async def google_login(body: GoogleOauth, authorize: AuthJWT = Depends()):
     with session_scope() as session:
         email = get_user_info(id_token=body.id_token)
 
-        if not is_user(session=session, email=email):
+        if not (user_id := is_user(session=session, email=email)):
             return {
                 "isFresh": True,
                 "email": email
             }
 
         access_token = authorize.create_access_token(
-            subject=email,
+            subject=user_id,
             algorithm=ALGORITHM,
             expires_time=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         refresh_token = authorize.create_refresh_token(
-            subject=email,
+            subject=user_id,
             algorithm=ALGORITHM,
             expires_time=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
         )
 
         return {
             "isFresh": False,
-            "email": email,
+            "user_id": user_id,
             "access_token": access_token,
             "refresh_token": refresh_token
         }
