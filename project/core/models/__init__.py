@@ -14,8 +14,7 @@ def session_scope():
         pool_recycle=3600,
         pool_size=20,
         max_overflow=20,
-        pool_pre_ping=True,
-        echo=True
+        pool_pre_ping=True
     )
     Session = scoped_session(sessionmaker(bind=engine, autocommit=False, autoflush=False))
     session = Session()
