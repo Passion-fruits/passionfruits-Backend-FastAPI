@@ -34,6 +34,7 @@ async def sign_up(body: SignUp):
         )
 
         return {
+            "user_id": user_id,
             "access_token": access_token,
             "refresh_token": refresh_token
         }
