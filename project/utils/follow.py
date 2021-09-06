@@ -60,7 +60,7 @@ def get_followings(session: Session, user_id: int, page: int):
         func.count(Follow2.follower)
     ).join(Profile,  Follow1.following == Profile.user_id).\
         join(Follow2, Follow1.following == Follow2.following).\
-        filter(Follow1.follower == 22).\
+        filter(Follow1.follower == user_id).\
         group_by(Follow1.following, Profile.name, Profile.image_path).\
         order_by(func.count(Follow2.follower).desc()).\
         limit(limit).offset(offset).all()
@@ -85,7 +85,7 @@ def get_followers(session: Session, user_id: int, page: int):
         func.count(Follow2.follower)
     ).join(Profile, Follow1.follower == Profile.user_id). \
         outerjoin(Follow2, Follow1.follower == Follow2.following). \
-        filter(Follow1.following == 22). \
+        filter(Follow1.following == user_id). \
         group_by(Follow1.follower, Profile.name, Profile.image_path). \
         order_by(func.count(Follow2.follower).desc()). \
         limit(limit).offset(offset).all()
