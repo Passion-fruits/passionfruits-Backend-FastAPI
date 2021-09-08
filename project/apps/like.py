@@ -5,7 +5,7 @@ from typing import Optional
 from project.core.models import session_scope
 
 from project.utils.auth import token_check
-from project.utils.like import like_it, unlike_it
+from project.utils.like import like_it, unlike_it, is_like
 
 
 router = APIRouter()
@@ -32,4 +32,14 @@ async def unlike(song_id: int, Authorzation: Optional[str] = Header(...)):
 
         return {
             "message": "success"
+        }
+
+
+@router.get("/like", status_code=status.HTTP_200_OK, tags=["like"])
+async def is_likes(song_id: int, Authorization: Optional[str] = Header(...)):
+    with session_scope() as session:
+        user_id = token_check(token=Authorization, type="access")
+
+        return {
+            "is_like": is_like(session=session, user_id=user_id, song_id=song_id)
         }
