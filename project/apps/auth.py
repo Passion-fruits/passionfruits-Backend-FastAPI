@@ -76,7 +76,12 @@ async def token_refresh(Authorization: Optional[str] = Header(...)):
         user_id=user_id,
         type="access"
     )
+    refresh_token = create_token(
+        user_id=user_id,
+        type="refresh"
+    )
 
     return {
-        "access_token": access_token
+        "access_token": access_token,
+        "refresh_token": refresh_token
     }
