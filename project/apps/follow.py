@@ -4,8 +4,6 @@ from typing import Optional
 
 from project.core.models import session_scope
 
-from project.core.schemas.follow import IsFollows
-
 from project.utils.auth import token_check
 from project.utils.follow import follow_it, unfollow_it, get_followings, get_followers, is_follow
 
@@ -68,11 +66,10 @@ async def get_follower(user_id: int, page: int):
 
 
 @router.get("/follow", status_code=status.HTTP_200_OK, tags=["follow"])
-async def is_follows(body: IsFollows, Authorization: Optional[str] = Header(...)):
+async def is_follows(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
         follower_id = token_check(token=Authorization, type="access")
 
         return {
-            following_id: is_follow(session=session, follower_id=follower_id, following_id=following_id)
-            for following_id in body.users
+            "is_follow": is_follow(session=session, follower_id=follower_id, following_id=user_id)
         }
