@@ -24,9 +24,9 @@ async def like(song_id: int, Authorization: Optional[str] = Header(...)):
 
 
 @router.delete("/like/{song_id}", status_code=status.HTTP_200_OK, tags=["like"])
-async def unlike(song_id: int, Authorzation: Optional[str] = Header(...)):
+async def unlike(song_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        user_id = token_check(token=Authorzation, type="access")
+        user_id = token_check(token=Authorization, type="access")
 
         unlike_it(session=session, user_id=user_id, song_id=song_id)
 
