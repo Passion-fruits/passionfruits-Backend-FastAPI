@@ -14,9 +14,9 @@ router = APIRouter()
 @router.post("/follow/{user_id}", status_code=status.HTTP_201_CREATED, tags=["follow"])
 async def follow(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        follower_id = token_check(token=Authorization, type="access")
+        following_id = token_check(token=Authorization, type="access")
 
-        follow_it(session=session, follower_id=follower_id, following_id=user_id)
+        follow_it(session=session, follower_id=user_id, following_id=following_id)
 
         return {
             "message": "success"
@@ -26,9 +26,9 @@ async def follow(user_id: int, Authorization: Optional[str] = Header(...)):
 @router.delete("/follow/{user_id}", status_code=status.HTTP_200_OK, tags=["follow"])
 async def unfollow(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        follower_id = token_check(token=Authorization, type="access")
+        following_id = token_check(token=Authorization, type="access")
 
-        unfollow_it(session=session, follower_id=follower_id, following_id=user_id)
+        unfollow_it(session=session, follower_id=user_id, following_id=following_id)
 
         return {
             "message": "success"
@@ -68,8 +68,8 @@ async def get_follower(user_id: int, page: int):
 @router.get("/follow", status_code=status.HTTP_200_OK, tags=["follow"])
 async def is_follows(user_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
-        follower_id = token_check(token=Authorization, type="access")
+        following_id = token_check(token=Authorization, type="access")
 
         return {
-            "is_follow": is_follow(session=session, follower_id=follower_id, following_id=user_id)
+            "is_follow": is_follow(session=session, follower_id=user_id, following_id=following_id)
         }
