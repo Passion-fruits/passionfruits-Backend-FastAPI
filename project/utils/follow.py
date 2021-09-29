@@ -48,7 +48,7 @@ def get_followings(session: Session, user_id: int, page: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this id")
 
     limit = LIMIT_NUM
-    offset = page * limit
+    offset = (page-1) * limit
 
     Follow1 = aliased(Follow)
     Follow2 = aliased(Follow)
@@ -73,7 +73,7 @@ def get_followers(session: Session, user_id: int, page: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="could not find user matching this id")
 
     limit = LIMIT_NUM
-    offset = page * limit
+    offset = (page-1) * limit
 
     Follow1 = aliased(Follow)
     Follow2 = aliased(Follow)
