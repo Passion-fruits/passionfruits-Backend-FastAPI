@@ -36,7 +36,7 @@ async def user_unlike_song(song_id: int, Authorization: Optional[str] = Header(.
 
 
 @router.get("/like/song", status_code=status.HTTP_200_OK, tags=["like"])
-async def is_like_song(song_id: int, Authorization: Optional[str] = Header(...)):
+async def is_user_like_song(song_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
         user_id = token_check(token=Authorization, type="access")
 
