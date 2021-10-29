@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
-from project.apps import auth, follow, like
+from project.apps import auth, follow, like, recommend
 
 
 app = FastAPI()
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(follow.router)
 app.include_router(like.router)
+app.include_router(recommend.router)
 
 
 if __name__ == '__main__':
