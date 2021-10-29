@@ -1,5 +1,5 @@
 # 베이스 이미지로 ubuntu:20.04.3 사용
-FROM ubuntu:20.04.3
+FROM python:3.9.7
 
 # 메인테이너 정보 (옵션)
 #MAINTAINER <your-nickname> <<your-email>>
