@@ -31,4 +31,4 @@ WORKDIR /python-docker
 RUN pip3 install -r requirements.txt
 
 # 컨테이너에서 실행될 명령어. 컨테이거나 실행되면 app.py를 실행시킨다.
-CMD gunicorn project.main:app --bind=0.0.0.0:8000 -k uvicorn.workers.UvicornH11Worker --daemon --access-logfile ./access.log --error-log ./error.log --keep-alive 0
+CMD ["gunicorn", "project.main:app", "--bind=0.0.0.0:8000", "-k", "uvicorn.workers.UvicornH11Worker", "--daemon", "--access-logfile", "./access.log", "--error-log", "./error.log", "--keep-alive", "0"]
