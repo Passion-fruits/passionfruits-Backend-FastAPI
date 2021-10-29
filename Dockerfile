@@ -16,7 +16,7 @@ RUN add-apt-repository -y ppa:fkrull/deadsnakes
 RUN apt-get install -y git
 
 # pip 업그레이드
-RUN python3.6 -m pip install pip --upgrade
+RUN python3 -m pip install pip --upgrade
 
 # 여러분의 현재 디렉토리의 모든 파일들을 도커 컨테이너의 /python-docker 디렉토리로 복사 (원하는 디렉토리로 설정해도 됨)
 ADD . /python-docker
