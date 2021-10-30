@@ -88,6 +88,10 @@ async def get_recent_songs_in_main(size: int, Authorization: Optional[str] = Hea
         user_id = token_check(token=Authorization, type="access")
         song_ids = get_user_history(session=session, user_id=user_id, size=size)
 
-        return {
-            "history": [id["song_id"] for id in song_ids]
-        }
+        return [{
+            "playlist_id": 0,
+            "name": f"데일리 추천{i}",
+            "cover_url": f"/rPlaylist{i}.png",
+            "like": None,
+            "base_song_id": song_ids[i-1]["song_id"]
+        } for i in range(1, size+1)]
