@@ -31,8 +31,8 @@ def get_lits_by_ids(session: Session, song_ids: list):
         func.count(User_like_song.user_id),
         func.count(User_comment_song.user_id)
     ).join(Profile, Song.user_id == Profile.user_id).\
-        join(User_like_song, Song.id == User_like_song.song_id).\
-        join(User_comment_song, Song.id == User_comment_song.song_id).\
+        outerjoin(User_like_song, Song.id == User_like_song.song_id).\
+        outerjoin(User_comment_song, Song.id == User_comment_song.song_id).\
         join(Song_genre, Song.id == Song_genre.song_id).\
         join(Genre_type, Song_genre.genre_type_id == Genre_type.id).\
         filter(Song.id.in_(song_ids)).\
@@ -60,7 +60,7 @@ def get_songs_by_ids(session: Session, song_ids: list):
         Song.cover_url,
         func.count(User_like_song.user_id)
     ).join(Profile, Song.user_id == Profile.user_id).\
-        join(User_like_song, Song.id == User_like_song.song_id).\
+        outerjoin(User_like_song, Song.id == User_like_song.song_id).\
         filter(Song.id.in_(song_ids)).\
         group_by(
         Song.id,
@@ -87,7 +87,7 @@ def get_playlist_by_ids(session: Session, song_ids: list):
         Song.cover_url,
         func.count(User_like_song.user_id)
     ).join(Profile, Song.user_id == Profile.user_id).\
-        join(User_like_song, Song.id == User_like_song.song_id). \
+        outerjoin(User_like_song, Song.id == User_like_song.song_id). \
         join(Song_genre, Song.id == Song_genre.song_id).\
         join(Genre_type, Song_genre.genre_type_id == Genre_type.id).\
         join(Mood, Song.id == Mood.song_id).\
