@@ -117,9 +117,9 @@ def get_user_history(session: Session, user_id, size: int):
         History.song_id
     ).filter(History.user_id == user_id).\
         order_by(History.created_at.desc()).\
-        limit(size)
+        limit(size).all()
 
-    if not song_ids.scalar():
+    if not song_ids:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="this user has no history")
 
-    return song_ids.all()
+    return song_ids
