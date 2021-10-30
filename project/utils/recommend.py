@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import linear_kernel
 from sklearn.decomposition import NMF
 from sklearn.preprocessing import normalize
 
-from random import choice
+from random import choice, sample
 
 from sqlalchemy.orm import Session
 
@@ -56,4 +56,7 @@ def recommend_ids_by_nmf(session: Session, song_id: int, size: int):
     value = pivot_df.loc[song_id]
     similarities = pivot_df.dot(value)
 
-    return list(similarities.nlargest(size).index)
+    sorted_similarities = similarities.nlargest(len(similarities))
+    recommended_ids = list(sorted_similarities[sorted_similarities.map(lambda x: x>=0.85)].index)
+
+    return sample(recommended_ids, size)
