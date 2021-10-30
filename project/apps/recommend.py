@@ -31,7 +31,7 @@ async def get_lit_recommendation(song_id: int, size: int):
             "short_url": short_url,
             "cover_url": cover_url,
             "user_id": user_id,
-            "name": name,
+            "artist": name,
             "like": like,
             "comment": comment
         } for id, title, description, genre, created_at, short_url, cover_url, user_id, name, like, comment in recommended_lits]
@@ -47,7 +47,7 @@ async def get_similar_songs_in_main(song_id: int, size: int):
             "song_id": id,
             "title": title,
             "user_id": user_id,
-            "name": name,
+            "artist": name,
             "song_url": song_url,
             "cover_url": cover_url,
             "like": like
@@ -74,7 +74,7 @@ async def get_similar_songs_in_main(song_id: int, size: int):
                 "mood": mood,
                 "created_at": created_at,
                 "user_id": user_id,
-                "name": name,
+                "artist": name,
                 "song_url": song_url,
                 "cover_url": cover_url,
                 "like": like
