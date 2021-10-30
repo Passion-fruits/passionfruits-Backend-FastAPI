@@ -1,3 +1,5 @@
+from fastapi import HTTPException, status
+
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -115,6 +117,9 @@ def get_user_history(session: Session, user_id, size: int):
         History.song_id
     ).filter(History.user_id == user_id).\
         order_by(History.created_at.desc()).\
-        limit(size).all()
+        limit(size)
 
-    return song_ids
+    if not song_ids.scalar():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="this user has no history")
+
+    return song_ids.all()
