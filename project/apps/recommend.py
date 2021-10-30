@@ -91,6 +91,7 @@ async def get_recent_songs_in_main(size: int, Authorization: Optional[str] = Hea
         return [{
             "playlist_id": 0,
             "name": f"데일리 추천{i}",
+            "author": "KUNDER",
             "cover_url": f"/rPlaylist{i}.png",
             "like": None,
             "base_song_id": song_ids[i-1]["song_id"]
