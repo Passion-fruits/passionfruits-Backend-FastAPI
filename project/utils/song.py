@@ -9,6 +9,7 @@ from project.core.models.song_genre import Song_genre
 from project.core.models.genre_type import Genre_type
 from project.core.models.mood import Mood
 from project.core.models.mood_type import Mood_type
+from project.core.models.history import History
 
 
 def is_song(session: Session, song_id: int):
@@ -107,3 +108,13 @@ def get_playlist_by_ids(session: Session, song_ids: list):
     )
 
     return songs
+
+
+def get_user_history(session: Session, user_id, size: int):
+    song_ids = session.query(
+        History.song_id
+    ).filter(History.user_id == user_id).\
+        order_by(History.created_at.desc()).\
+        limit(size).all()
+
+    return song_ids

@@ -10,7 +10,7 @@ from project.core.models import session_scope
 
 from project.utils.auth import token_check
 from project.utils.recommend import recommend_ids_by_collaborative_filtering, recommend_ids_by_nmf
-from project.utils.song import get_lits_by_ids, get_songs_by_ids, get_playlist_by_ids
+from project.utils.song import get_lits_by_ids, get_songs_by_ids, get_playlist_by_ids, get_user_history
 
 
 router = APIRouter()
@@ -86,8 +86,8 @@ async def get_similar_songs_in_main(song_id: int, size: int):
 async def get_recent_songs_in_main(size: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
         user_id = token_check(token=Authorization, type="access")
-        # 유저의 재생기록 size개 기반 nmf 추천
+        song_ids = get_user_history(session=session, user_id=user_id, size=size)
 
         return {
-            "history": "최근 들은 노래 id {size}개"
+            "history": [id["song_id"] for id in song_ids]
         }
