@@ -61,12 +61,14 @@ async def get_similar_songs_in_main(song_id: int, size: int):
         songs = get_playlist_by_ids(session=session, song_ids=recommended_ids)
 
         return {
-            "name": None,
-            "author": "KUNDER",
-            "like": 0,
-            "cover_url": None,
-            "playlist_id": 0,
-            "created_at": datetime.now(timezone("Asia/Seoul")),
+            "playlist": {
+                "name": None,
+                "author": "KUNDER",
+                "like": 0,
+                "cover_url": None,
+                "playlist_id": 0,
+                "created_at": datetime.now(timezone("Asia/Seoul"))
+            },
             "songs": [{
                 "song_id": id,
                 "title": title,
