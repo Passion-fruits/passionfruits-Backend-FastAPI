@@ -59,4 +59,7 @@ def recommend_ids_by_nmf(session: Session, song_id: int, size: int):
     sorted_similarities = similarities.nlargest(len(similarities))
     recommended_ids = list(sorted_similarities[sorted_similarities.map(lambda x: x>=0.85)].index)
 
+    if len(recommended_ids) < size:
+        return recommended_ids
+
     return sample(recommended_ids, size)
