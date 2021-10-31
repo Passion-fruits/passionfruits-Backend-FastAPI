@@ -92,9 +92,9 @@ async def get_recent_songs_in_main(size: int, Authorization: Optional[str] = Hea
 
         return [{
             "playlist_id": 0,
-            "name": f"데일리 추천{i}",
+            "name": f"데일리 추천{song_ids.index(id)+1}",
             "author": "KUNDER",
-            "cover_url": f"/rPlaylist{i}.png",
+            "cover_url": f"/rPlaylist{song_ids.index(id)+1}.png",
             "like": None,
-            "base_song_id": song_ids[i-1]["song_id"]
-        } for i in range(1, size+1)]
+            "base_song_id": id["song_id"]
+        } for id in song_ids]
