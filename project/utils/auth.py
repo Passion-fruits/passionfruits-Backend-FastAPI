@@ -17,6 +17,7 @@ from project.core.models.genre_type import Genre_type
 from project.core.models.sns import Sns
 
 from project.utils import is_user
+from project.utils.kdt import get_random_wallet
 
 from project.config import CLIENT_ID, ALGORITHM, SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 
@@ -39,9 +40,18 @@ def create_user(session: Session, name: str, email: str, genre_list: list, image
     if is_user(session=session, email=email):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This email is already in use")
 
-    user = User(email=email)
+    private_key, wallet = get_random_wallet()
 
-    profile = Profile(name=name, image_path=image_path)
+    user = User(
+        email=email,
+        private_key=private_key
+    )
+
+    profile = Profile(
+        name=name,
+        image_path=image_path,
+        wallet=wallet
+    )
 
     genre_filter_options = [Genre_type.name.like(genre_name) for genre_name in genre_list]
     genre_queries = session.query(Genre_type).filter(or_(*genre_filter_options)).all()
