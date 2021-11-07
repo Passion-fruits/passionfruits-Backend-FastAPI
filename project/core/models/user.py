@@ -8,3 +8,4 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(VARCHAR(100), nullable=False)
+    private_key = Column(VARCHAR(100), nullable=False)
