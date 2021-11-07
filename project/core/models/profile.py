@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, VARCHAR
+from sqlalchemy import Column, Integer, ForeignKey, VARCHAR, DATETIME
 from sqlalchemy.orm import relationship, backref
 
 from project.core.models import Base
@@ -11,5 +11,6 @@ class Profile(Base):
     name = Column(VARCHAR(30), nullable=False)
     bio = Column(VARCHAR(250))
     image_path = Column(VARCHAR(150))
+    wallet = Column(VARCHAR(100))
 
     user = relationship("User", backref=backref("profiles", order_by=user_id))
