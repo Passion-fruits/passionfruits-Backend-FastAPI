@@ -15,6 +15,7 @@ from project.core.models.profile import Profile
 from project.core.models.user_genre import User_genre
 from project.core.models.genre_type import Genre_type
 from project.core.models.sns import Sns
+from project.core.models.kdt import Kdt
 
 from project.utils import is_user
 from project.utils.kdt import get_random_wallet
@@ -60,6 +61,7 @@ def create_user(session: Session, name: str, email: str, genre_list: list, image
     profile.user_genres = [User_genre(genre_type_id=genre_id) for genre_id in genre_ids]
     profile.sns = [Sns()]
 
+    user.kdt = [Kdt()]
     user.profiles = [profile]
 
     session.add(user)
