@@ -112,7 +112,7 @@ def get_playlist_by_ids(session: Session, song_ids: list):
     return songs
 
 
-def get_user_history(session: Session, user_id, size: int):
+def get_user_history(session: Session, user_id: int, size: int):
     song_ids = session.query(
         History.song_id
     ).filter(History.user_id == user_id).\
