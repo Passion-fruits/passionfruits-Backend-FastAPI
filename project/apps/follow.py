@@ -6,6 +6,7 @@ from project.core.models import session_scope
 
 from project.utils.auth import token_check
 from project.utils.follow import follow_it, unfollow_it, get_followings, get_followers, is_follow
+from project.utils.song import get_following_songs
 
 
 router = APIRouter()
@@ -73,3 +74,21 @@ async def is_follows(user_id: int, Authorization: Optional[str] = Header(...)):
         return {
             "is_follow": is_follow(session=session, follower_id=user_id, following_id=following_id)
         }
+
+
+@router.get("/follow/song", status_code=status.HTTP_200_OK, tags=["follow"])
+async def get_my_feed(page: int, size: int, Authorization: Optional[str] = Header(...)):
+    with session_scope() as session:
+        user_id = token_check(token=Authorization, type="access")
+
+        songs = get_following_songs(session=session, user_id=user_id, page=page, size=size)
+
+        return [{
+            "song_id": song_id,
+            "user_id": user_id,
+            "cover_url": cover_url,
+            "song_url": song_url,
+            "title": title,
+            "artist": artist,
+            "like": like
+        } for song_id, user_id, cover_url, song_url, title, artist, like in songs]
