@@ -12,6 +12,7 @@ from project.core.models.genre_type import Genre_type
 from project.core.models.mood import Mood
 from project.core.models.mood_type import Mood_type
 from project.core.models.history import History
+from project.core.models.follow import Follow
 
 
 def is_song(session: Session, song_id: int):
@@ -123,3 +124,32 @@ def get_user_history(session: Session, user_id: int, size: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="this user has no history")
 
     return song_ids
+
+
+def get_following_songs(session, user_id: int, page: int, size: int):
+    limit = size
+    offset = (page - 1) * limit
+
+    songs = session.query(
+        Song.id,
+        Song.user_id,
+        Song.cover_url,
+        Song.song_url,
+        Song.title,
+        Profile.name,
+        func.count(User_like_song.user_id)
+    ).join(Profile, Song.user_id == Profile.user_id).\
+        join(Follow, Follow.following == user_id).\
+        outerjoin(User_like_song, Song.id == User_like_song.song_id).\
+        filter(Song.user_id == Follow.follower).\
+        group_by(
+        Song.id,
+        Song.user_id,
+        Song.cover_url,
+        Song.song_url,
+        Song.title,
+        Profile.name
+    ).order_by(Song.created_at.desc()).\
+    limit(limit).offset(offset).all()
+
+    return songs
