@@ -8,6 +8,6 @@ def get_random_wallet():
 
     if result.status_code == 200:
         response = result.json()
-        return response["address"], response["private_key"]
+        return response["private_key"], response["address"]
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="could not get random wallet")
