@@ -69,7 +69,7 @@ async def user_like_playlist(playlist_id: int, Authorization: Optional[str] = He
         }
 
 
-@router.get("/like/playlist/{playlist_id}", status_code=status.HTTP_200_OK, tags=["like"])
+@router.get("/like/playlist", status_code=status.HTTP_200_OK, tags=["like"])
 async def is_user_like_playlist(playlist_id: int, Authorization: Optional[str] = Header(...)):
     with session_scope() as session:
         user_id = token_check(token=Authorization, type="access")
