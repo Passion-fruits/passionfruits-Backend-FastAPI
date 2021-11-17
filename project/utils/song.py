@@ -126,7 +126,7 @@ def get_user_history(session: Session, user_id: int, size: int):
     return song_ids
 
 
-def get_following_songs(session, user_id: int, page: int, size: int):
+def get_following_songs(session: Session, user_id: int, page: int, size: int):
     limit = size
     offset = (page - 1) * limit
 
