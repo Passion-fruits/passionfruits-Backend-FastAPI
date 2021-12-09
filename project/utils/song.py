@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy import func, and_
+from sqlalchemy.orm import Session, aliased
 
 from project.core.models.song import Song
 from project.core.models.profile import Profile
@@ -151,5 +151,36 @@ def get_following_songs(session: Session, user_id: int, page: int, size: int):
         Profile.name
     ).order_by(Song.created_at.desc()).\
     limit(limit).offset(offset).all()
+
+    return songs
+
+
+def get_like_songs(session: Session, user_id: int, page: int, size: int):
+    limit = size
+    offset = (page - 1) * limit
+
+    Like1 = aliased(User_like_song)
+    Like2 = aliased(User_like_song)
+
+    songs = session.query(
+        Song.id,
+        Song.song_url,
+        Song.cover_url,
+        Song.title,
+        Song.user_id,
+        Profile.name,
+        func.count(Like2.user_id)
+    ).join(Profile, Song.user_id == Profile.user_id)\
+        .join(Like1, and_(Like1.user_id == user_id, Song.id == Like1.song_id))\
+        .outerjoin(Like2, Song.id == Like2.song_id)\
+        .group_by(
+        Song.id,
+        Song.user_id,
+        Song.cover_url,
+        Song.song_url,
+        Song.title,
+        Profile.name
+    )\
+        .limit(limit).offset(offset).all()
 
     return songs
