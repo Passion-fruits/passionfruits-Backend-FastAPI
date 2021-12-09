@@ -150,9 +150,12 @@ def get_following_songs(session: Session, user_id: int, page: int, size: int):
         Song.title,
         Profile.name
     ).order_by(Song.created_at.desc()).\
-    limit(limit).offset(offset).all()
+    limit(limit).offset(offset)
 
-    return songs
+    if not songs.scalar():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="page is too big")
+
+    return songs.all()
 
 
 def get_like_songs(session: Session, user_id: int, page: int, size: int):
