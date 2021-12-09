@@ -7,6 +7,7 @@ from project.core.models import session_scope
 from project.utils.auth import token_check
 from project.utils.like import like_song, unlike_song, is_like_song, like_playlist, unlike_playlist, is_like_playlist
 from project.utils.song import get_like_songs
+from project.utils.playlist import get_like_playlists
 
 
 router = APIRouter()
@@ -96,3 +97,19 @@ async def is_user_like_playlist(playlist_id: int, Authorization: Optional[str] =
         return {
             "is_like": is_like_playlist(session=session, user_id=user_id, playlist_id=playlist_id)
         }
+
+
+@router.get("/like/playlist/list", status_code=status.HTTP_200_OK, tags=["like"])
+async def get_user_like_playlists(page: int, size: int, Authorization: Optional[str] = Header(...)):
+    with session_scope() as session:
+        user_id = token_check(token=Authorization, type="access")
+
+        playlists = get_like_playlists(session=session, user_id=user_id, page=page, size=size)
+
+        return [{
+            "playlist_id": playlist_id,
+            "name": name,
+            "cover_url": cover_url,
+            "author": author,
+            "like": like
+        } for playlist_id, name, cover_url, author, like in playlists]
